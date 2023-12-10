@@ -1,25 +1,48 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 import Link from 'next/link';
 import Head from 'next/head';
 import Button from '@/components/Button';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCircleNotch } from '@fortawesome/free-solid-svg-icons';
 
 const SignIn = () => {
   const router = useRouter();
   const { callbackUrl } = router.query;
 
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasError, setHasError] = useState(false);
+
   const email = useRef('');
   const password = useRef('');
 
-  const handleSignIn = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSignIn = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    signIn('credentials', {
-      email: email.current,
-      password: password.current,
-      callbackUrl: callbackUrl as string,
-    });
+    setIsLoading(true);
+    setHasError(false);
+    try {
+      const result = await signIn('credentials', {
+        email: email.current,
+        password: password.current,
+        redirect: false,
+      });
+
+      if (!result?.ok) {
+        setHasError(true);
+      } else {
+        if (callbackUrl) {
+          window.location.replace(callbackUrl as string);
+        } else {
+          window.location.replace('/');
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -91,9 +114,21 @@ const SignIn = () => {
                   onChange={(e) => (password.current = e.target.value)}
                 />
               </div>
+              {!!hasError && (
+                <div className="bg-danger text-white font-bold p-2 rounded my-2">
+                  Invalid username or password.
+                </div>
+              )}
               <div>
                 <Button type="submit" className="w-full" color="secondary">
                   Log in
+                  {!!isLoading && (
+                    <FontAwesomeIcon
+                      className="ms-1"
+                      icon={faCircleNotch}
+                      spin
+                    />
+                  )}
                 </Button>
               </div>
             </form>

@@ -162,6 +162,7 @@ const GameDetails = () => {
 
   const getUserGameDetails = async () => {
     try {
+      if (!user?.id || !gameDetails?.id) return;
       const userGameDetails = (await serverApi.get(
         `/api/player/getGameByPlayerId?playerId=${user?.id}&apiId=${gameDetails?.id}`,
       )) as Game;
@@ -176,12 +177,11 @@ const GameDetails = () => {
     if (!gameDetails || !gameDetails.platforms) return;
     getPlatforms();
     getUserGameDetails();
-  }, [gameDetails, getPlatforms, getUserGameDetails]);
+  }, [gameDetails]);
 
   useEffect(() => {
     const getGameDetails = async () => {
       const gameDetails = (await rawgApi(`/games/${id}`)) as RawgGameDetail;
-      console.log({ gameDetails });
       setGameDetails(gameDetails);
       setIsLoading(false);
     };
@@ -296,7 +296,7 @@ const GameDetails = () => {
                 color="secondary"
                 onClick={() => signIn()}
               >
-                Sign in to add to Library
+                Sign in to Add to Library
               </Button>
             )}
           </div>

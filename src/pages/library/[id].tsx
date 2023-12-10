@@ -136,8 +136,6 @@ const UserLibrary = () => {
         values,
       )) as GameWithReviews;
 
-      console.log({ updatedGame });
-
       setGameDetails((prev) => {
         const updatedGameIndex = prev?.findIndex(
           (g) => g.id === updatedGame.id,
@@ -162,12 +160,7 @@ const UserLibrary = () => {
       if (error?.response?.data?.message) {
         message = error.response.data.message;
       }
-      setToastProps({
-        ...toastProps,
-        message: message,
-        visible: true,
-        type: 'danger',
-      });
+      setEditReviewError(message);
     } finally {
       setEditReviewLoading(false);
     }
@@ -179,7 +172,6 @@ const UserLibrary = () => {
         const libraryDetails = (await serverApi.get(
           `/api/player/getPlayerLibrary?playerId=${id}`,
         )) as GameWithReviews[];
-        console.log({ libraryDetails });
         setGameDetails(libraryDetails);
       } catch (error: AxiosError | any) {
         console.log({ error });
@@ -211,6 +203,12 @@ const UserLibrary = () => {
     }, toastTimer);
     return () => clearTimeout(timer);
   }, [toastProps]);
+
+  useEffect(() => {
+    if (status === 'unauthenticated' || user?.id !== id) {
+      router.push('/');
+    }
+  }, [status]);
 
   if (!!isLoading) {
     return <Loading />;
