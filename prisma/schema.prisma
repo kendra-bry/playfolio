@@ -1,0 +1,55 @@
+generator client {
+  provider    = "prisma-client-js"
+}
+
+datasource db {
+  provider    = "mongodb"
+  url         = env("DATABASE_URL")
+}
+
+model User {
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  email       String @unique
+  password    String
+  role        Role @default(USER)
+  firstName   String
+  lastName    String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  isLocked    Boolean @default(false)
+  loginCount  Int @default(0)
+  games       Game[]
+  reviews     Review[]
+}
+
+model Game {
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  title       String
+  apiId       Int
+  startDate   DateTime?
+  endDate     DateTime?
+  reviews     Review[]
+  backlog     Boolean @default(false)
+  library     Boolean @default(false)
+  player      User @relation(fields: [playerId], references: [id])
+  playerId    String @db.ObjectId
+}
+
+model Review {
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  rating      Int?
+  comment     String?
+  player      User? @relation(fields: [playerId], references: [id])
+  playerId    String? @db.ObjectId
+  game        Game @relation(fields: [gameId], references: [id])
+  gameId      String @db.ObjectId
+}
+
+enum Role {
+  USER
+  ADMIN
+}
