@@ -43,6 +43,7 @@ const SearchBar = ({
         Search
       </label>
       <input
+        id="searchInput"
         type="text"
         placeholder="eg. The Witcher 3"
         className={inputClass}
