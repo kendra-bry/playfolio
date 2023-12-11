@@ -25,6 +25,7 @@ import Textarea from '@/components/form/Textarea';
 import Loading from '@/components/Loading';
 import Toast, { ToastProps } from '@/components/Toast';
 import { Game } from '@prisma/client';
+import Head from 'next/head';
 
 interface AddToLibraryFormValues {
   id: number;
@@ -122,7 +123,6 @@ const GameDetails = () => {
     actions: FormikHelpers<AddToLibraryFormValues>,
   ) => {
     try {
-      console.log({ values });
       setAddToLibraryLoading(true);
       await serverApi.post('/api/library/add', values);
       await getUserGameDetails();
@@ -187,7 +187,6 @@ const GameDetails = () => {
   useEffect(() => {
     const getGameDetails = async () => {
       const gameDetails = (await rawgApi(`/games/${id}`)) as RawgGameDetail;
-      console.log({ gameDetails });
       setGameDetails(gameDetails);
       setIsLoading(false);
     };
@@ -212,6 +211,9 @@ const GameDetails = () => {
 
   return (
     <>
+      <Head>
+        <title>Game Details</title>
+      </Head>
       <div className="container mx-auto p-4 sm:p-6 lg:p-8 text-white">
         <h1 className="text-4xl mb-4">Game Details</h1>
         <div className="border rounded-lg p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-2">

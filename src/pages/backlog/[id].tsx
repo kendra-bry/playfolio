@@ -11,6 +11,7 @@ import { Game } from '@prisma/client';
 import Button from '@/components/Button';
 import Link from 'next/link';
 import Image from 'next/image';
+import Head from 'next/head';
 
 const defaultToastProps: ToastProps = {
   message: '',
@@ -35,7 +36,6 @@ const UserBacklog = () => {
   const handleRemoveFromBacklog = async (game: Game) => {
     setIsRemovingFromBacklog(game.id);
     try {
-      console.log({ game });
       await serverApi.delete('/api/backlog/remove', {
         data: { gameId: game.id },
       });
@@ -74,7 +74,6 @@ const UserBacklog = () => {
         const backlogDetails = (await serverApi.get(
           `/api/backlog/get?playerId=${id}`,
         )) as Game[];
-        console.log({ backlogDetails });
         setBacklogDetails(backlogDetails);
       } catch (error: AxiosError | any) {
         console.log(error);
@@ -119,6 +118,9 @@ const UserBacklog = () => {
 
   return (
     <>
+      <Head>
+        <title>Backlog</title>
+      </Head>
       <div className="container mx-auto p-4 sm:p-6 lg:p-8 text-white">
         <h1 className="text-4xl mb-4">Player Backlog</h1>
         <div className="border rounded-lg p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 bg-gray-700">

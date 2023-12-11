@@ -18,13 +18,15 @@ export default async function handle(
         where: {
           playerId: parsedUserId,
           backlog: true,
-        }
+        },
       });
 
       res.status(200).json(games);
     } catch (error) {
       console.log({ error });
       res.status(500).json({ message: 'Unable to get backlog' });
+    } finally {
+      await prisma.$disconnect();
     }
   } else {
     res.status(405).json({ message: 'Method not allowed' });

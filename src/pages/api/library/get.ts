@@ -26,6 +26,8 @@ export default async function handle(
     } catch (error) {
       console.log({ error });
       res.status(500).json({ message: 'Unable to get library' });
+    } finally {
+      await prisma.$disconnect();
     }
   } else {
     res.status(405).json({ message: 'Method not allowed' });

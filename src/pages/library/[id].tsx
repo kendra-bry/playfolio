@@ -16,6 +16,7 @@ import Modal from '@/components/Modal';
 import { Form, Formik } from 'formik';
 import { Input, Textarea } from '@/components/form';
 import { convertShortDate } from '@/helpers/utils';
+import Head from 'next/head';
 
 interface GameWithReviews extends PrismaGame {
   reviews: Review[];
@@ -220,6 +221,9 @@ const UserLibrary = () => {
 
   return (
     <>
+      <Head>
+        <title>Library</title>
+      </Head>
       <div className="container mx-auto p-4 sm:p-6 lg:p-8 text-white">
         <h1 className="text-4xl mb-4">Player Library</h1>
         <div className="border rounded-lg p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 bg-gray-700">

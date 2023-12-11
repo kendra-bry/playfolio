@@ -7,15 +7,8 @@ export default async function handle(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
-  const {
-    reviewId,
-    gameId,
-    title,
-    startDate,
-    endDate,
-    rating,
-    comment,
-  } = req.body;
+  const { reviewId, gameId, title, startDate, endDate, rating, comment } =
+    req.body;
 
   if (!reviewId || !gameId || !title) {
     res.status(405).json({ error: 'Missing required values' });
@@ -48,6 +41,8 @@ export default async function handle(
     } catch (error) {
       console.log({ error });
       res.status(500).json({ message: 'Unable to update review.' });
+    } finally {
+      await prisma.$disconnect();
     }
   } else {
     res.status(405).json({ message: 'Method not allowed' });

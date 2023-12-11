@@ -62,7 +62,7 @@ export default async function handle(
       console.log({ error });
       res.status(500).json({ message: 'Unable to add to library' });
     } finally {
-      prisma.$disconnect();
+      await prisma.$disconnect();
     }
   } else {
     res.status(405).json({ message: 'Method not allowed' });
