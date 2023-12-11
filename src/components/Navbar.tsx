@@ -54,7 +54,7 @@ const Navbar = () => {
         <Link href="/" className="flex items-center space-x-1">
           <Image
             src="/images/Play Dark.png"
-            alt="Playfolio Logo"
+            alt="Playfolio Logo Small"
             width={35}
             height={35}
           />

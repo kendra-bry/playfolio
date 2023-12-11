@@ -19,7 +19,7 @@ const Home = () => {
 
         <div className="border-b-2 border-danger my-10 w-4/5 mx-auto"></div>
 
-        <Section className="md:min-h-64 lg:h-64 px-10 md:px-48 lg:px-64 bg-primary">
+        <Section className="md:min-h-64 lg:h-64 px-10 md:px-48 lg:px-64 bg-primary text-gray-950 font-semibold">
           <h2 className="text-2xl text-center mb-4">Search and Add Games</h2>
           <p className="text-lg text-center">
             Explore our vast database of video games and build your personal

@@ -39,6 +39,9 @@ const SearchBar = ({
 
   return (
     <form className={className} onSubmit={handleSubmit} {...props}>
+      <label htmlFor="searchInput" className="sr-only">
+        Search
+      </label>
       <input
         type="text"
         placeholder="eg. The Witcher 3"
@@ -46,7 +49,8 @@ const SearchBar = ({
         value={searchTerm}
         onChange={handleInputChange}
       />
-      <button type="submit" className={buttonClass}>
+      <button type="submit" className={buttonClass} aria-label="Search">
+        <span className="sr-only">Submit Search</span>
         {!isLoading && <FontAwesomeIcon icon={faMagnifyingGlass} />}
         {!!isLoading && <FontAwesomeIcon icon={faCircleNotch} spin />}
       </button>

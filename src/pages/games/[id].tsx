@@ -79,6 +79,7 @@ const GameDetails = () => {
   const [addToLibraryLoading, setAddToLibraryLoading] = useState(false);
   const [addToLibraryError, setAddToLibraryError] = useState();
   const [toastProps, setToastProps] = useState<ToastProps>(defaultToastProps);
+  const [pageTitle, setPageTitle] = useState('Game Details');
 
   const initialValues: AddToLibraryFormValues = {
     id: gameDetails?.id ?? 0,
@@ -179,9 +180,14 @@ const GameDetails = () => {
   };
 
   useEffect(() => {
-    if (!gameDetails || !gameDetails.platforms) return;
-    getPlatforms();
+    if (!gameDetails) return;
     getUserGameDetails();
+    if (!!gameDetails?.name) {
+      setPageTitle(gameDetails?.name);
+    }
+
+    if (!gameDetails.platforms) return;
+    getPlatforms();
   }, [gameDetails]);
 
   useEffect(() => {
@@ -212,7 +218,7 @@ const GameDetails = () => {
   return (
     <>
       <Head>
-        <title>Game Details</title>
+        <title>{pageTitle}</title>
       </Head>
       <div className="container mx-auto p-4 sm:p-6 lg:p-8 text-white">
         <h1 className="text-4xl mb-4">Game Details</h1>

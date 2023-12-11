@@ -222,7 +222,7 @@ const UserLibrary = () => {
   return (
     <>
       <Head>
-        <title>Library</title>
+        <title>Player Library</title>
       </Head>
       <div className="container mx-auto p-4 sm:p-6 lg:p-8 text-white">
         <h1 className="text-4xl mb-4">Player Library</h1>
