@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { signIn } from 'next-auth/react';
-import { getBaseUrl } from '@/helpers/utils';
 import Head from 'next/head';
 import { serverApi } from '@/lib/api';
 import Button from '@/components/Button';
+import { AxiosError } from 'axios';
 
 const Register = () => {
   const [email, setEmail] = useState('');
@@ -13,8 +13,13 @@ const Register = () => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
 
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+
   const handleRegistration = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setIsLoading(true);
+    setErrorMessage('');
     try {
       if (!validateForm()) return;
 
@@ -26,8 +31,15 @@ const Register = () => {
       });
 
       return signIn();
-    } catch (error) {
-      console.log(error);
+    } catch (error: AxiosError | any) {
+      console.log({ error });
+      let message = error.message;
+      if (error?.response?.data?.message) {
+        message = error.response.data.message;
+      }
+      setErrorMessage(message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -35,9 +47,11 @@ const Register = () => {
     let formIsValid = true;
     if (!email || !password || !firstName || !lastName || !repeatPassword) {
       formIsValid = false;
+      setErrorMessage('All fields are required');
     }
     if (password !== repeatPassword) {
       formIsValid = false;
+      setErrorMessage('Passwords do not match');
     }
     return formIsValid;
   };
@@ -149,11 +163,21 @@ const Register = () => {
               required
             />
           </div>
+          {!!errorMessage && (
+            <div className="bg-danger text-white font-bold p-2 rounded my-2">
+              {errorMessage}
+            </div>
+          )}
           <div className="flex items-center justify-between">
             <Button color="cancel" onClick={() => signIn()}>
               Cancel
             </Button>
-            <Button type="submit" color="secondary">
+            <Button
+              type="submit"
+              color="secondary"
+              disabled={isLoading}
+              spinner={isLoading}
+            >
               Sign Up
             </Button>
           </div>

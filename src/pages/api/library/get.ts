@@ -15,14 +15,17 @@ export default async function handle(
   if (req.method === 'GET') {
     try {
       const games = await prisma.game.findMany({
-        where: { playerId: parsedUserId },
+        where: {
+          playerId: parsedUserId,
+          library: true,
+        },
         include: { reviews: true },
       });
 
       res.status(200).json(games);
     } catch (error) {
       console.log({ error });
-      res.status(500).json({ message: 'Unable to add to backlog' });
+      res.status(500).json({ message: 'Unable to get library' });
     }
   } else {
     res.status(405).json({ message: 'Method not allowed' });

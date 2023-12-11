@@ -3,7 +3,7 @@ import { getBaseUrl } from '@/helpers/utils';
 
 const baseApiInstance: AxiosInstance = axios.create({
   baseURL: getBaseUrl(),
-  timeout: 5000,
+  timeout: 10000,
   headers: { 'Content-Type': 'application/json' },
 });
 

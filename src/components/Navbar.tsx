@@ -149,7 +149,7 @@ const Navbar = () => {
             {status === 'authenticated' && (
               <li>
                 <Link
-                  href="/backlog"
+                  href={`/backlog/${user?.id}`}
                   className={`block py-2 px-3 rounded md:p-0 ${
                     activePage.includes('/backlog')
                       ? 'md:text-primary md:bg-transparent bg-primary'

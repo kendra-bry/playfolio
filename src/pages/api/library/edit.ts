@@ -10,7 +10,6 @@ export default async function handle(
   const {
     reviewId,
     gameId,
-    userId,
     title,
     startDate,
     endDate,
@@ -18,14 +17,18 @@ export default async function handle(
     comment,
   } = req.body;
 
+  if (!reviewId || !gameId || !title) {
+    res.status(405).json({ error: 'Missing required values' });
+  }
+
   if (req.method === 'POST') {
     try {
       const game = await prisma.game.update({
         where: { id: gameId },
         data: {
           title,
-          startDate: new Date(startDate).toISOString(),
-          endDate: new Date(endDate).toISOString(),
+          startDate: startDate ? new Date(startDate).toISOString() : null,
+          endDate: endDate ? new Date(endDate).toISOString() : null,
           reviews: {
             update: {
               where: { id: reviewId },

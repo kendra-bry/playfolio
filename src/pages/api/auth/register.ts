@@ -27,7 +27,7 @@ const POST = async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(201).send({ status: 'success' });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ message: 'Server Error' });
+    return res.status(500).json({ message: 'Unable to register user.' });
   } finally {
     await prisma.$disconnect();
   }

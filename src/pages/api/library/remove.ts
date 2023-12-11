@@ -7,8 +7,13 @@ export default async function handle(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
-  if (req.method === 'POST') {
-    const { gameId } = req.body;
+  const { gameId } = req.body;
+
+  if (!gameId) {
+    res.status(405).json({ error: 'Missing required values' });
+  }
+
+  if (req.method === 'DELETE') {
     try {
       await prisma.review.deleteMany({
         where: { gameId },

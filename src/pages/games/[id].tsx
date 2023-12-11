@@ -30,6 +30,7 @@ interface AddToLibraryFormValues {
   id: number;
   userId: string;
   title: string;
+  imageUrl?: string;
   startDate?: string;
   endDate?: string;
   rating?: number;
@@ -40,6 +41,7 @@ const AddToLibraryFormSchema = Yup.object().shape({
   id: Yup.number().required('Required'),
   userId: Yup.string().required('Required'),
   title: Yup.string().required('Required'),
+  imageUrl: Yup.string(),
   startDate: Yup.date(),
   endDate: Yup.date().min(
     Yup.ref('startDate'),
@@ -81,6 +83,7 @@ const GameDetails = () => {
     id: gameDetails?.id ?? 0,
     userId: user?.id ?? '',
     title: gameDetails?.name ?? '',
+    imageUrl: gameDetails?.background_image ?? '',
     startDate: '',
     endDate: '',
     rating: 0,
@@ -119,8 +122,10 @@ const GameDetails = () => {
     actions: FormikHelpers<AddToLibraryFormValues>,
   ) => {
     try {
+      console.log({ values });
       setAddToLibraryLoading(true);
       await serverApi.post('/api/library/add', values);
+      await getUserGameDetails();
       toggleModal();
       setToastProps({
         ...toastProps,
@@ -128,7 +133,6 @@ const GameDetails = () => {
         visible: true,
         type: 'success',
       });
-      await getUserGameDetails();
     } catch (error: AxiosError | any) {
       console.log({ error });
       if (error?.response?.data?.message) {
@@ -147,7 +151,9 @@ const GameDetails = () => {
         id: gameDetails?.id,
         userId: user?.id,
         title: gameDetails?.name,
+        imageUrl: gameDetails?.background_image,
       });
+      await getUserGameDetails();
       setToastProps({
         ...toastProps,
         message: 'Game added to backlog',
@@ -166,7 +172,6 @@ const GameDetails = () => {
       const userGameDetails = (await serverApi.get(
         `/api/player/getGameByPlayerId?playerId=${user?.id}&apiId=${gameDetails?.id}`,
       )) as Game;
-      console.log({ userGameDetails });
       setUserGameDetails(userGameDetails);
     } catch (error) {
       console.log({ error });
@@ -182,6 +187,7 @@ const GameDetails = () => {
   useEffect(() => {
     const getGameDetails = async () => {
       const gameDetails = (await rawgApi(`/games/${id}`)) as RawgGameDetail;
+      console.log({ gameDetails });
       setGameDetails(gameDetails);
       setIsLoading(false);
     };
@@ -279,7 +285,14 @@ const GameDetails = () => {
                 Add to Library
               </Button>
             )}
-            {status === 'authenticated' && (
+            {status === 'authenticated' && !!userGameDetails?.backlog && (
+              <Link href={`/backlog/${user?.id}`}>
+                <Button className="w-full my-1" color="warning">
+                  View in Backlog
+                </Button>
+              </Link>
+            )}
+            {status === 'authenticated' && !userGameDetails?.backlog && (
               <Button
                 className="w-full my-1"
                 color="warning"
@@ -341,6 +354,7 @@ const GameDetails = () => {
             <Form>
               <Input hidden name="id" />
               <Input hidden name="userId" />
+              <Input hidden name="imageUrl" />
               <Input label="Title" disabled name="title" />
               <Input label="Start Date" type="date" name="startDate" />
               <Input label="End Date" type="date" name="endDate" />

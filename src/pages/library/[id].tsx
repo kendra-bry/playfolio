@@ -8,6 +8,7 @@ import withLayout from '@/components/hoc/withLayout';
 import Loading from '@/components/Loading';
 import { Game as PrismaGame, Review } from '@prisma/client';
 import Link from 'next/link';
+import Image from 'next/image';
 import Button from '@/components/Button';
 import Toast, { ToastProps } from '@/components/Toast';
 import { AxiosError } from 'axios';
@@ -24,6 +25,7 @@ interface EditReviewFormValues {
   reviewId?: string;
   gameId?: string;
   userId?: string;
+  imageUrl?: string;
   title?: string;
   startDate?: string | Date;
   endDate?: string | Date;
@@ -35,6 +37,7 @@ const EditReviewFormSchema = Yup.object().shape({
   reviewId: Yup.string().required('Required'),
   gameId: Yup.string().required('Required'),
   userId: Yup.string().required('Required'),
+  imageUrl: Yup.string(),
   title: Yup.string().required('Required'),
   startDate: Yup.date(),
   endDate: Yup.date().min(
@@ -74,9 +77,10 @@ const UserLibrary = () => {
   );
 
   const initialValues: EditReviewFormValues = {
-    reviewId: selectedGame?.reviews[0].id ?? '',
+    reviewId: selectedGame?.reviews[0]?.id ?? '',
     gameId: selectedGame?.id ?? '',
     userId: user?.id ?? '',
+    imageUrl: selectedGame?.imageUrl ?? '',
     title: selectedGame?.title ?? '',
     startDate: selectedGame?.startDate
       ? new Date(selectedGame?.startDate).toISOString().split('T')[0]
@@ -101,8 +105,8 @@ const UserLibrary = () => {
   const handleRemoveFromLibrary = async (gameId: string) => {
     try {
       setIsRemovingFromLibrary(gameId);
-      await serverApi.post('/api/player/removeFromLibrary', {
-        gameId,
+      await serverApi.delete('/api/library/remove', {
+        data: { gameId },
       });
       setGameDetails((prev) => prev?.filter((game) => game.id !== gameId));
       setToastProps({
@@ -132,7 +136,7 @@ const UserLibrary = () => {
     try {
       setEditReviewLoading(true);
       const updatedGame = (await serverApi.post(
-        '/api/review/editReview',
+        '/api/library/edit',
         values,
       )) as GameWithReviews;
 
@@ -170,7 +174,7 @@ const UserLibrary = () => {
     const getLibraryDetails = async () => {
       try {
         const libraryDetails = (await serverApi.get(
-          `/api/player/getPlayerLibrary?playerId=${id}`,
+          `/api/library/get?playerId=${id}`,
         )) as GameWithReviews[];
         setGameDetails(libraryDetails);
       } catch (error: AxiosError | any) {
@@ -228,6 +232,15 @@ const UserLibrary = () => {
               className="border rounded-lg p-4 flex flex-col justify-between bg-gray-800 shadow-xl"
             >
               <div className="flex flex-col justify-between">
+                {!!game?.imageUrl && (
+                  <Image
+                    src={game?.imageUrl}
+                    alt={game?.title}
+                    width={1920}
+                    height={1080}
+                    className="rounded mb-3"
+                  />
+                )}
                 <div className="text-xl font-bold mb-2">{game.title}</div>
                 {game?.startDate && (
                   <div className="text-lg">
@@ -296,6 +309,7 @@ const UserLibrary = () => {
               <Input hidden name="reviewId" />
               <Input hidden name="gameId" />
               <Input hidden name="userId" />
+              <Input hidden name="imageUrl" />
               <Input label="Title" disabled name="title" />
               <Input label="Start Date" type="date" name="startDate" />
               <Input label="End Date" type="date" name="endDate" />

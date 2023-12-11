@@ -32,7 +32,7 @@ const SignIn = () => {
       if (!result?.ok) {
         setHasError(true);
       } else {
-        if (callbackUrl) {
+        if (callbackUrl && !callbackUrl.includes('/register')) {
           window.location.replace(callbackUrl as string);
         } else {
           window.location.replace('/');
