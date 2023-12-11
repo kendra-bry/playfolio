@@ -15,6 +15,10 @@ export default async function handle(
 
   if (req.method === 'DELETE') {
     try {
+      await prisma.review.deleteMany({
+        where: { gameId },
+      });
+
       await prisma.game.delete({
         where: { id: gameId },
       });

@@ -236,8 +236,8 @@ const UserLibrary = () => {
                   <Image
                     src={game?.imageUrl}
                     alt={game?.title}
-                    width={1920}
-                    height={1080}
+                    width={400}
+                    height={200}
                     className="rounded mb-3"
                   />
                 )}

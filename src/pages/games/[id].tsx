@@ -313,15 +313,15 @@ const GameDetails = () => {
               </Button>
             )}
           </div>
-          <div className="order-1 lg:order-2 col-span-4 grid  md:grid-cols-2 grid-cols-1">
-            <div className="order-2 xl:order-1 xl:col-span-1 lg:col-span-2 p-4">
+          <div className="order-1 lg:order-2 col-span-4 grid grid-cols-1">
+            <div className="order-2 xl:col-span-1 lg:col-span-2 p-4">
               <h2 className="text-white text-3xl">{gameDetails?.name}</h2>
               <div className="border-b-2 border-secondary my-4 mx-auto"></div>
               <div className="text-white">
                 <p className="text-lg">
                   {showFullDescription
                     ? gameDetails?.description_raw
-                    : `${gameDetails?.description_raw?.slice(0, 150)}...`}
+                    : `${gameDetails?.description_raw?.slice(0, 300)}...`}
                   <button
                     className="text-primary underline cursor-pointer ms-1"
                     onClick={toggleDescription}
@@ -331,13 +331,14 @@ const GameDetails = () => {
                 </p>
               </div>
             </div>
-            <div className="order-1 xl:order-2 xl:col-span-1 lg:col-span-2 md p-4">
+            <div className="order-1 xl:col-span-1 lg:col-span-2 md p-4">
               {!!gameDetails?.background_image && (
                 <Image
                   src={gameDetails?.background_image}
                   alt={gameDetails?.name}
                   width={1920}
                   height={1080}
+                  className="rounded"
                 />
               )}
             </div>
